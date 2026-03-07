@@ -1,0 +1,149 @@
+This challenge simulates a "job interview" where you must solve 5 rounds of algorithmic problems under strict time limits. The problems are randomly generated, so you need to write an automated solver script. The problems are: arithmetic evaluation, pattern recognition, 0/1 knapsack problem, shortest path in graph and grid path maximum sum.
+
+Since problems are randomly generated and have tight time limits, you must write a script that:
+1. Connects to the server
+2. Parses each question
+3. Computes the answer algorithmically
+4. Sends the response before the timeout
+
+Use, for example, pythons eval() to compute the arithmetic problem.
+
+def solve_round1(r):
+    for _ in range(10):
+        r.recvuntil(b': ')
+        line = r.recvline().decode().strip()
+        # Remove the " = ?" suffix
+        expr = line.replace(' = ?', '')
+        answer = eval(expr)
+        r.sendlineafter(b'> ', str(answer).encode())
+
+For the pattern recognition part, first figure out the types of patterns, then solve them programatically:
+
+def solve_sequence(seq):
+    # check arithmetic sequence
+    diffs = [seq[i+1] - seq[i] for i in range(len(seq)-1)]
+    if len(set(diffs)) == 1:
+        return seq[-1] + diffs[0]
+
+    # check geometric sequence
+    if seq[0] != 0:
+        ratios = [seq[i+1] / seq[i] for i in range(len(seq)-1)]
+        if len(set(ratios)) == 1:
+            return int(seq[-1] * ratios[0])
+
+    # check fibonacci-like
+    is_fib = all(seq[i] == seq[i-1] + seq[i-2] for i in range(2, len(seq)))
+    if is_fib:
+        return seq[-1] + seq[-2]
+
+    # try common formulas with different offsets
+    for offset in range(0, 10):
+        # n^2
+        expected = [(i + offset) ** 2 for i in range(len(seq))]
+        if expected == seq:
+            return (len(seq) + offset) ** 2
+
+        # n^3
+        expected = [(i + offset) ** 3 for i in range(len(seq))]
+        if expected == seq:
+            return (len(seq) + offset) ** 3
+
+        # 2^n
+        expected = [2 ** (i + offset) for i in range(len(seq))]
+        if expected == seq:
+            return 2 ** (len(seq) + offset)
+
+        # triangular: n*(n+1)//2
+        expected = [(i + offset) * (i + offset + 1) // 2 for i in range(len(seq))]
+        if expected == seq:
+            n = len(seq) + offset
+            return n * (n + 1) // 2
+
+        # n^2 + n + 1
+        expected = [(i + offset) ** 2 + (i + offset) + 1 for i in range(len(seq))]
+        if expected == seq:
+            n = len(seq) + offset
+            return n ** 2 + n + 1
+
+Knapsack is a classic dynamic programming problem, parse the items and capacity and solve:
+
+def solve_knapsack(items, capacity):
+    dp = [0] * (capacity + 1)
+    for weight, value in items:
+        for w in range(capacity, weight - 1, -1):
+            dp[w] = max(dp[w], dp[w - weight] + value)
+    return dp[capacity]
+
+def solve_round3(r):
+    for _ in range(6):
+        r.recvuntil(b'Items (weight, value): ')
+        items_str = r.recvline().decode().strip()
+        items = ast.literal_eval(items_str)
+
+        r.recvuntil(b'Capacity: ')
+        capacity = int(r.recvline().decode().strip())
+
+        answer = solve_knapsack(items, capacity)
+        r.sendlineafter(b'> ', str(answer).encode())
+
+For shortest path, use dijkstras algorithm.
+
+def solve_dijkstra(n, edges):
+    graph = {i: [] for i in range(n)}
+    for u, v, w in edges:
+        graph[u].append((v, w))
+        graph[v].append((u, w))
+
+    dist = [float('inf')] * n
+    dist[0] = 0
+    pq = [(0, 0)]
+
+    while pq:
+        d, u = heapq.heappop(pq)
+        if d > dist[u]:
+            continue
+        for v, w in graph[u]:
+            if dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+                heapq.heappush(pq, (dist[v], v))
+
+    return dist[n - 1]
+
+def solve_round4(r):
+    for _ in range(4):
+        r.recvuntil(b'Nodes: ')
+        n = int(r.recvline().decode().split()[0])
+
+        r.recvuntil(b'Edges (u, v, weight): ')
+        edges_str = r.recvline().decode().strip()
+        edges = ast.literal_eval(edges_str)
+
+        answer = solve_dijkstra(n, edges)
+        r.sendlineafter(b'> ', str(answer).encode())
+
+For the maximum sum path from (0,0) to (N-1,M-1) you can also use dp:
+
+def solve_grid(grid):
+    rows = len(grid)
+    cols = len(grid[0])
+
+    dp = [[-float('inf')] * cols for _ in range(rows)]
+    dp[0][0] = grid[0][0]
+
+    for i in range(rows):
+        for j in range(cols):
+            if grid[i][j] == -1:
+                continue
+            if i == 0 and j == 0:
+                continue
+            candidates = []
+            if i > 0 and dp[i-1][j] != -float('inf'):
+                candidates.append(dp[i-1][j])
+            if j > 0 and dp[i][j-1] != -float('inf'):
+                candidates.append(dp[i][j-1])
+            if candidates:
+                dp[i][j] = max(candidates) + grid[i][j]
+
+    return dp[rows-1][cols-1]
+
+Putting this into a solver script will provide you with the flag.

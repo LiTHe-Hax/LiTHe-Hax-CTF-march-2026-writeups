@@ -1,0 +1,31 @@
+1. Look at the boarding pass
+2. Scan QR code to extract the information in a compact string
+3. Run exiftool on file
+
+tavro@tavro.se torbjorns-vacation % exiftool boarding-pass.pdf
+File Name                       : boarding-pass.pdf
+...
+User Comment                    : API URL: torbjorns-vacation-web.challs.lithehax.se Format: ?name=X&dob=X&destination=X&code=X&phrase=X
+Author                          : LiTHe Hax Evidence Recovery
+Software                        : LiTHe Hax Backup System v2.0
+...
+
+4. You already have the name, destination and code from the boarding pass
+
+name = torbjörn_hackström
+dob = ?
+destination = tromsø
+code = bd42069
+phrase = ?
+
+5. If you browse all popular social media platforms for Torbjörn Hackström you will find the phrase "fritt som fågeln" in his profile descriptions
+
+phrase = fritt_som_fageln
+
+6. If you go to his GitHub profile you can find that he updated his profile README.md file on his birthday (look at commit authored date)
+
+dob = 2024-03-29
+
+7. Web crawl the API URL torbjorns-vacation-web.challs.lithehax.se to find which endpoints it has, and use torbjorns-vacation-web.challs.lithehax.se/api/deadman
+
+Final payload is: ?name=torbjorn_hackstrom&dob=2024-03-29&destination=tromso&code=bd42069&phrase=fritt_som_fageln

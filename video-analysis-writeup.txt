@@ -1,0 +1,1 @@
+Open the video in a video editing software, keep the first occurance of every unique frame, remove the rest of the frames. Reading each frame after the other will spell out the flag.
