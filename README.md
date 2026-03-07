@@ -1,1 +1,0 @@
-# LiTHe-Hax-CTF-march-2026-writeups
