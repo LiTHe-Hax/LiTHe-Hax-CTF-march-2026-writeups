@@ -1,0 +1,9 @@
+The given file is a memory dump of a Win10 machine (can be identified with ex. Volatility).
+
+There are (probably) many different tools that can be used to recover a "deleted" file, scalpel is one such tool that is very easy to use.
+
+Running scalpel on the memory dump will produce a number of jpg and png files (remember to change the config file for scalpel if you're not getting any of a specific filetype), some broken and some non-related ones. 
+
+The jpg-image that contains a picture of a raccoon has the flag (b64-encoded) in the "Copyright" field in the metadata. 
+
+A recommendation is to go through all of the carved images with an image viewer, and analyze the ones that seem interesting/raccoon-related.

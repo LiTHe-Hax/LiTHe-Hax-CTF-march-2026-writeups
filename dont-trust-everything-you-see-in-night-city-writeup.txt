@@ -1,0 +1,20 @@
+From the description, we can guess that some kind of terminal/Powershell/cmd window ran when the malicious code was executed.
+
+The provided file is a memory dump, and can be analyzed by Volatility (for instance). Once the OS has been identified (Win10), one can dig deeper by using some relevant Windows-plugins:
+
+- windows.pslist: Shows all running processes when the snapshot was taken, will show that Powershell was running.
+- windows.cmdline: Shows all command line args, including the malicious commands that was executed.
+
+These commands are b64-encoded, decoding it will reveal the following:
+
+---
+$C2 = "sussy_ip_addr"
+$def="SEFYe3RvcmJq"
+$not="b3JuX2dvdF9o"
+$something="YWNrZWRfc2Fk"
+$interesting="fQ=="
+$f=$def+$not+$something+$interesting
+Start-Sleep -Seconds 600
+---
+
+Decoding $f from b64 (again) reveals the flag.
