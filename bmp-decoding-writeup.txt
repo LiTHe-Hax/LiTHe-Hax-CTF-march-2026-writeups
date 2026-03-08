@@ -1,0 +1,14 @@
+Looking at the image using a command like "strings" or "less" reveals the following sentence:
+- "A skilled netrunner knows the ins and outs of all kinds of files and systems"
+
+This hints toward the fact that you need to know how BMP files work in order to solve the challenge.
+
+Searching the phrase "BMP format" on Google reveals sites that describe how BMP files are made up, like the following:
+- https://en.wikipedia.org/wiki/BMP_file_format
+- https://www.ece.ualberta.ca/~elliott/ee552/studentAppNotes/2003_w/misc/bmp_file_format/bmp_file_format.htm
+
+Looking at what is contained within the file header portion of BMP files reveals that there is a portion of the header that is not used and is usually 0.
+
+Looking at the same portion in the BMP file you recieved, you will notice that it is not empty and actually spells out "h1d3". In other words, it spells out "hide" using letters and numbers.
+
+This points toward the fact that you need to use the program "steghide" to extract the flag. If you then use steghide with "h1d3" as the password, you will get a text file that contains the flag.
