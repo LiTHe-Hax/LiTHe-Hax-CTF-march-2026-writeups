@@ -1,0 +1,4 @@
+This is a classic RSA problem where the e value is too small for RSA to work properly.
+The way to solve this is by seeing that e = 3, which means that due to how RSA encrypts
+C = M^e (mod n), if e and n are sufficiently small (M^3 < n) you can simply take the cube root of the cipher C
+and get the message M.≈
