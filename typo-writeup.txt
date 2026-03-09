@@ -1,0 +1,11 @@
+Each frame in the gif represents a letter. Almost every word uses a different chifer or font.
+
+The first letters is maze code
+
+The second word is a font called Epitri
+
+The third word is made with a font that is called Schaltkreis, if you increase the size of the black dots the letters should become more clear
+
+The forth and fifth word is in binary 
+
+and the last font is called Matoran

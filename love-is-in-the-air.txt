@@ -1,0 +1,1 @@
+Using a software suite such as aircrack-ng you could set your wifi antenna into monitor mode and capture a WPA handshake which could be used to crash the password localy with a wordlist
